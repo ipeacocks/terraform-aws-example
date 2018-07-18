@@ -12,6 +12,7 @@ There described creating of new VPC with public and private subnets inside.
   <img src="schemes/subnets-web-schema.png" width="600" height="470"/>
 </p>
 
+-----
 If no additional procedures are exist inside of each dir you can apply them as follow:
 
 ```
