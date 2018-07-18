@@ -3,7 +3,7 @@
 `simple-web`
 
 Is directory where described simple EC2 server in default VPC/subnets.
-\
+
 `subnets-web`
 
 There described creating of new VPC with public and private subnets inside.
