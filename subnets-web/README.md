@@ -42,6 +42,4 @@ data "aws_ami" "ubuntu-latest" {
 
   owners = ["099720109477"] # Canonical
 }
-
-image_id = "${data.aws_ami.ubuntu-latest.id}"
 ```
