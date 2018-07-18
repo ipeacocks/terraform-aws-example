@@ -25,6 +25,7 @@ Links:
 https://github.com/hashicorp/terraform/issues/12877#issuecomment-311649591    
 https://medium.com/@jessgreb01/how-to-terraform-locking-state-in-s3-2dc9a5665cb6
 
+
 Get latest AMI image (for example for Ubuntu):
 ```
 data "aws_ami" "ubuntu-latest" {
