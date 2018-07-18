@@ -1,3 +1,5 @@
+Before using these templates you need launch next commands.
+
 Create S3 bucket and enable versioning on it:
 ```
 $ aws s3api create-bucket \
