@@ -1,0 +1,13 @@
+# Terraform files
+.terraform
+
+# OS X files
+.history
+.DS_Store
+
+# vim files
+*.swp
+*.swo
+
+# Crash log files
+crash.log
