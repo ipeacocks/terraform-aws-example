@@ -19,5 +19,5 @@ If no additional procedures are exist inside of each dir you can apply them as f
 $ terraform plan
 $ terrafrom apply
 ```
-
+\
 Blog post regarding this code (UA lang): https://blog.ipeacocks.info/2018/07/terraform-managing-aws-infrastructure.html
