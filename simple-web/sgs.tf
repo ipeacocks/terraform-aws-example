@@ -5,7 +5,7 @@ resource "aws_security_group" "web-sg" {
     create_before_destroy = true
   }
 
-  tags {
+  tags = {
     Name = "web-sg"
   }
 }

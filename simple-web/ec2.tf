@@ -5,12 +5,12 @@ resource "aws_key_pair" "my-key" {
 
 resource "aws_instance" "web" {
   # Ubuntu Server 16.04 LTS (HVM), SSD Volume Type in us-east-1
-  ami                    = "ami-a4dc46db"
+  ami                    = "ami-0044130ca185d0880"
   instance_type          = "t2.medium"
   key_name               = "${aws_key_pair.my-key.key_name}"
   vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
 
-  tags {
+  tags = {
     Name = "web"
   }
 
