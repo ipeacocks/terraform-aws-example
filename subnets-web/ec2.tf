@@ -1,28 +1,28 @@
 resource "aws_key_pair" "my-key" {
   key_name   = "my-key"
-  public_key = "${var.public-key}"
+  public_key = var.public-key
 }
 
 resource "aws_instance" "bastion" {
-  ami = "${lookup(var.ami-image, var.region)}"
+  ami = lookup(var.ami-image, var.region)
 
   # ami                  = "${data.aws_ami.ubuntu-latest.id}"
   instance_type          = "t2.micro"
-  subnet_id              = "${aws_subnet.my-public-subnet.id}"
-  vpc_security_group_ids = ["${aws_security_group.bastion-sg.id}"]
-  key_name               = "${aws_key_pair.my-key.key_name}"
+  subnet_id              = aws_subnet.my-public-subnet.id
+  vpc_security_group_ids = [aws_security_group.bastion-sg.id]
+  key_name               = aws_key_pair.my-key.key_name
 
-  tags {
+  tags = {
     Name      = "bastion"
     Terraform = 1
   }
 }
 
 resource "aws_eip" "bastion-eip" {
-  instance   = "${aws_instance.bastion.id}"
-  depends_on = ["aws_instance.bastion"]
+  instance   = aws_instance.bastion.id
+  depends_on = [aws_instance.bastion]
 
-  tags {
+  tags = {
     Name      = "bastion-eip"
     Terraform = 1
   }
@@ -30,13 +30,13 @@ resource "aws_eip" "bastion-eip" {
 
 resource "aws_instance" "web" {
   count                  = 2
-  ami                    = "${lookup(var.ami-image, var.region)}"
+  ami                    = lookup(var.ami-image, var.region)
   instance_type          = "t2.micro"
-  subnet_id              = "${aws_subnet.my-private-subnet.id}"
-  vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
-  key_name               = "${aws_key_pair.my-key.key_name}"
+  subnet_id              = aws_subnet.my-private-subnet.id
+  vpc_security_group_ids = [aws_security_group.web-sg.id]
+  key_name               = aws_key_pair.my-key.key_name
 
-  tags {
+  tags = {
     Name      = "web-${count.index}"
     Terraform = 1
   }
@@ -55,8 +55,8 @@ resource "aws_instance" "web" {
 
 resource "aws_elb" "web-elb" {
   name            = "web-elb"
-  subnets         = ["${aws_subnet.my-public-subnet.id}"]
-  security_groups = ["${aws_security_group.web-elb-sg.id}"]
+  subnets         = [aws_subnet.my-public-subnet.id]
+  security_groups = [aws_security_group.web-elb-sg.id]
 
   listener {
     instance_port     = 8080
@@ -73,12 +73,12 @@ resource "aws_elb" "web-elb" {
     interval            = 30
   }
 
-  instances                   = ["${aws_instance.web.*.id}"]
+  instances                   = aws_instance.web.*.id
   idle_timeout                = 90
   connection_draining         = true
   connection_draining_timeout = 90
 
-  tags {
+  tags = {
     Name      = "web-elb"
     Terraform = 1
   }

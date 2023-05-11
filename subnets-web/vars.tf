@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "ami-image" {
-  type = "map"
+  type = map(any)
 
   # Ubuntu 16.04
   default = {
@@ -16,7 +16,7 @@ variable "ami-image" {
 }
 
 variable "credentials" {
-  default     = "~/.aws/credentials"
+  default     = ["~/.aws/credentials"]
   description = "where your access and secret_key are stored, you create the file when you run the aws config"
 }
 

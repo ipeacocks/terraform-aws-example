@@ -1,5 +1,12 @@
 # Terraform files
 .terraform
+.terraform.lock.hcl
+.terraform
+terraform.tfstate.backup
+terraform.tfstate
+
+# python (awscli client) venv
+venv
 
 # OS X files
 .history
@@ -11,3 +18,4 @@
 
 # Crash log files
 crash.log
+
