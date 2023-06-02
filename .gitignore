@@ -19,7 +19,3 @@ venv
 # Crash log files
 crash.log
 
-# temp dirs
-EKS
-yamls
-
