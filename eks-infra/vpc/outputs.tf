@@ -1,7 +1,6 @@
 locals {
   control_plane_subnets_length = length(local.control_plane_subnets)
-  # worker_subnets_length = length(local.worker_subnets)
-  private_subnets_length = length(module.vpc.private_subnets)
+  private_subnets_length       = length(module.vpc.private_subnets)
 }
 
 output "region" {
@@ -18,11 +17,6 @@ output "public_subnets" {
   description = "Public subnets"
   value       = module.vpc.public_subnets
 }
-
-# output "private_subnets" {
-#   description = "Private subnets"
-#   value       = module.vpc.private_subnets
-# }
 
 output "control_plane_subnet_ids" {
   description = "Private subnets for Control plane"

@@ -1,3 +1,5 @@
+# Details are here https://github.com/terraform-aws-modules/terraform-aws-vpc#inputs
+
 variable "region" {
   description = "AWS region"
   type        = string
@@ -38,4 +40,34 @@ variable "credentials" {
   default     = ["~/.aws/credentials"]
   description = "Where your access and secret_key are stored, you create the file when you run the aws config"
   type        = list(any)
+}
+
+variable "vpc_name" {
+  description = "VPC name"
+  type        = string
+  default     = "my-vpc"
+}
+
+variable "enable_nat_gateway" {
+  description = "Should be true if you want to provision NAT Gateways for each of your private networks"
+  type        = bool
+  default     = true
+}
+
+variable "single_nat_gateway" {
+  description = "Should be true if you want to provision a single shared NAT Gateway across all of your private networks"
+  type        = bool
+  default     = false
+}
+
+variable "one_nat_gateway_per_az" {
+  description = "Should be true if you want only one NAT Gateway per availability zone."
+  type        = bool
+  default     = true
+}
+
+variable "enable_dns_hostnames" {
+  description = "Should be true to enable DNS hostnames in the Default VPC"
+  type        = bool
+  default     = true
 }

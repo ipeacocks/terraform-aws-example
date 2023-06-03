@@ -15,7 +15,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.0.0"
 
-  name = "my-vpc"
+  name = var.vpc_name
 
   cidr = var.vpc_cidr
   azs  = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -23,10 +23,10 @@ module "vpc" {
   private_subnets = concat(local.control_plane_subnets, local.worker_subnets)
   public_subnets  = var.public_subnets
 
-  enable_nat_gateway     = true
-  single_nat_gateway     = false
-  one_nat_gateway_per_az = true
-  enable_dns_hostnames   = true
+  enable_nat_gateway     = var.enable_nat_gateway
+  single_nat_gateway     = var.single_nat_gateway
+  one_nat_gateway_per_az = var.one_nat_gateway_per_az
+  enable_dns_hostnames   = var.enable_dns_hostnames
 
   # tags needed for AWS LB Controller
   public_subnet_tags = {
