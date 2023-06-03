@@ -6,9 +6,9 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  cluster_name          = "my-eks-${random_string.suffix.result}"
-  control_plane_subnets = ["10.0.1.0/28", "10.0.1.16/28", "10.0.1.32/28"]
-  worker_subnets        = ["10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
+  cluster_name          = "${var.eks_name_prefix}-${random_string.suffix.result}"
+  control_plane_subnets = var.control_plane_subnets
+  worker_subnets        = var.worker_subnets
 }
 
 module "vpc" {
@@ -17,12 +17,11 @@ module "vpc" {
 
   name = "my-vpc"
 
-  cidr = "10.0.0.0/16"
+  cidr = var.vpc_cidr
   azs  = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  # private_subnets = ["10.0.1.0/28", "10.0.1.16/28", "10.0.1.32/28", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
   private_subnets = concat(local.control_plane_subnets, local.worker_subnets)
-  public_subnets  = ["10.0.100.0/24", "10.0.101.0/24", "10.0.102.0/24"]
+  public_subnets  = var.public_subnets
 
   enable_nat_gateway     = true
   single_nat_gateway     = false
