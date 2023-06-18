@@ -29,13 +29,14 @@ module "vpc" {
   enable_dns_hostnames   = var.enable_dns_hostnames
 
   # tags needed for AWS LB Controller
+  # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/deploy/subnet_discovery/
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    # "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                      = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    # "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = 1
   }
 }
