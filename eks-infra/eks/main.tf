@@ -10,11 +10,21 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+}
+
+locals {
+  cluster_name = "${var.eks_name_prefix}-${random_string.suffix.result}"
+}
+
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.15.2"
 
-  cluster_name    = data.terraform_remote_state.vpc.outputs.eks_cluster_name
+  cluster_name    = local.cluster_name
   cluster_version = var.cluster_version
 
   vpc_id                         = data.terraform_remote_state.vpc.outputs.vpc_id

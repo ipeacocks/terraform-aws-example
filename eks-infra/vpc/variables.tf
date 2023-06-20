@@ -6,12 +6,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "eks_name_prefix" {
-  description = "EKS cluster name prefix"
-  type        = string
-  default     = "my-eks"
-}
-
 variable "vpc_cidr" {
   description = "VPC CIDR"
   type        = string

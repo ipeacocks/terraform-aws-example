@@ -27,8 +27,3 @@ output "worker_subnet_ids" {
   description = "Private subnets for Worker nodes"
   value       = slice(module.vpc.private_subnets, local.control_plane_subnets_length, local.private_subnets_length)
 }
-
-output "eks_cluster_name" {
-  description = "EKS cluster name"
-  value       = local.cluster_name
-}

@@ -11,6 +11,12 @@ variable "credentials" {
   description = "where your access and secret_key are stored, you create the file when you run the aws config"
 }
 
+variable "eks_name_prefix" {
+  description = "EKS cluster name prefix"
+  type        = string
+  default     = "my-eks"
+}
+
 variable "cluster_version" {
   description = "EKS version"
   type        = number
