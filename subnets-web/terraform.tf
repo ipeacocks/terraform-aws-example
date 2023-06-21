@@ -8,9 +8,9 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "my-test-tf-state"
-    dynamodb_table = "my-test-inf-tflock"
-    key            = "my-test-inf.tfstate"
+    bucket         = "my-tf-state-15"
+    dynamodb_table = "my-inf-tflock"
+    key            = "my-inf.tfstate"
     region         = "us-east-1"
   }
 }
