@@ -27,3 +27,8 @@ output "oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading https://)"
   value       = module.eks.oidc_provider
 }
+
+output "cluster_certificate_authority_data" {
+  description = "Base64 encoded certificate data required to communicate with the cluster"
+  value = module.eks.cluster_certificate_authority_data
+}

@@ -1,0 +1,52 @@
+data "terraform_remote_state" "eks" {
+  backend = "s3"
+
+  config = {
+    bucket = "my-tf-state-2023-06-01"
+    key    = "my-eks.tfstate"
+    region = "us-east-1"
+  }
+}
+
+module "irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.30.0"
+
+  role_name                              = "eks-lb-controller-${data.terraform_remote_state.eks.outputs.cluster_name}"
+  attach_load_balancer_controller_policy = true
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = data.terraform_remote_state.eks.outputs.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+    }
+  }
+}
+
+resource "helm_release" "this" {
+  name       = "aws-load-balancer-controller"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  version    = var.helm_package_version
+  namespace  = "kube-system"
+
+  set {
+    name  = "clusterName"
+    value = data.terraform_remote_state.eks.outputs.cluster_name
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = "true"
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.irsa_role.iam_role_arn
+  }
+}

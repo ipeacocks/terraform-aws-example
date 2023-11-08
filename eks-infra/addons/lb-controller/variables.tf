@@ -9,7 +9,8 @@ variable "credentials" {
   description = "where your access and secret_key are stored, you create the file when you run the aws config"
 }
 
-variable "aws-load-balancer-controller_version" {
-  default     = "1.5.3"
-  description = "Helm package version of AWS LB Controller"
+variable "helm_package_version" {
+  type        = string
+  description = "Version of the helm package."
+  default     = "1.6.2"
 }
