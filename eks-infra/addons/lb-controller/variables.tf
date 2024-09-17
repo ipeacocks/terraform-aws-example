@@ -12,5 +12,5 @@ variable "credentials" {
 variable "helm_package_version" {
   type        = string
   description = "Version of the helm package."
-  default     = "1.6.2"
+  default     = "1.8.2"
 }

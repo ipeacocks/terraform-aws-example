@@ -8,7 +8,7 @@ variable "region" {
 
 variable "credentials" {
   default     = ["~/.aws/credentials"]
-  description = "where your access and secret_key are stored, you create the file when you run the aws config"
+  description = "Where your access and secret_key are stored, you create the file when you run the aws config"
 }
 
 variable "eks_name_prefix" {
@@ -19,10 +19,11 @@ variable "eks_name_prefix" {
 
 variable "cluster_version" {
   description = "EKS version"
-  type        = number
-  default     = "1.28"
+  type        = string
+  default     = "1.30"
 }
 
+# can be false if you connect to private network via VPN or something
 variable "cluster_endpoint_public_access" {
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled"
   type        = bool
@@ -71,6 +72,7 @@ variable "node_security_group_additional_rules" {
   }
 }
 
+# maybe better to pin versions here
 variable "cluster_addons" {
   description = "Map of cluster addon configurations to enable for the cluster"
   default = {
@@ -83,20 +85,19 @@ variable "cluster_addons" {
     vpc-cni = {
       most_recent = true
     }
+    eks-pod-identity-agent = {
+      most_recent = true
+    }
   }
 }
 
-variable "aws_auth_users" {
-  description = "List of user maps to add to the aws-auth configmap"
-  default = [
-    {
-      userarn  = "arn:aws:iam::78your_id_is_here_27:user/john-doe"
-      username = "john-doe"
-    }
-  ]
-}
-
+# here should be your account ID
 variable "kms_key_administrators" {
   description = "A list of IAM ARNs for key administrators"
-  default     = ["arn:aws:iam::78your_id_is_here_27:root"]
+  default     = ["arn:aws:iam::789248082627:root"]
+}
+
+variable "enable_cluster_creator_admin_permissions" {
+  description = "Indicates whether or not to add the cluster creator (the identity used by Terraform) as an administrator via access entry"
+  default     = true
 }
