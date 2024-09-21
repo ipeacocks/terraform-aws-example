@@ -1,0 +1,76 @@
+data "terraform_remote_state" "eks" {
+  backend = "s3"
+
+  config = {
+    bucket = "my-tf-state-2023-06-01"
+    key    = "my-eks.tfstate"
+    region = "us-east-1"
+  }
+}
+
+data "aws_route53_zone" "this" {
+  for_each = toset(var.route53_zone_ids)
+
+  zone_id = each.key
+}
+
+locals {
+  route53_zone_names = [for k, v in data.aws_route53_zone.this : v.name]
+  route53_zone_arns  = [for k, v in data.aws_route53_zone.this : v.arn]
+}
+
+module "irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.44.0"
+
+  role_name                     = "eks-external-dns-controller-${data.terraform_remote_state.eks.outputs.cluster_name}-${var.region}"
+  attach_external_dns_policy    = true
+  external_dns_hosted_zone_arns = local.route53_zone_arns
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = data.terraform_remote_state.eks.outputs.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:external-dns"]
+    }
+  }
+}
+
+resource "helm_release" "this" {
+  name       = "external-dns"
+  repository = "oci://registry-1.docker.io/bitnamicharts"
+  chart      = "external-dns"
+  version    = var.helm_package_version
+  namespace  = "kube-system"
+
+  set {
+    name  = "serviceAccount.create"
+    value = "true"
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.irsa_role.iam_role_arn
+  }
+
+  set {
+    name  = "provider"
+    value = "aws"
+  }
+
+  set {
+    name  = "txtOwnerId"
+    value = "External-dns addon of ${data.terraform_remote_state.eks.outputs.cluster_name} EKS cluster"
+  }
+
+  set {
+    name = "domainFilters"
+    # list like "example.com,example-internal.com"
+    value = format("{%s}", join(",", local.route53_zone_names))
+  }
+
+  # it removes unused domains after removing related resources
+  set {
+    name  = "policy"
+    value = "sync"
+  }
+}
