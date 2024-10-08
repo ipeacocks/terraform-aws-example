@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-generic
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  csi.storage.k8s.io/fstype: ext4
+  type: gp3
+  encrypted: "true"
+  allowAutoIOPSPerGBIncrease: "true"
+  iopsPerGB: "3"
+  throughput: "250"
+  %{ for i, tag_specification in split(",", tag_specifications) }
+  tagSpecification_${i}: ${tag_specification}
+  %{ endfor }

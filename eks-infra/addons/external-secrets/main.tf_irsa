@@ -1,0 +1,40 @@
+data "terraform_remote_state" "eks" {
+  backend = "s3"
+
+  config = {
+    bucket = "my-tf-state-2023-06-01"
+    key    = "my-eks.tfstate"
+    region = "us-east-1"
+  }
+}
+
+module "irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.44.0"
+
+  role_name                             = "eks-external-secrets-${data.terraform_remote_state.eks.outputs.cluster_name}-${var.region}"
+  attach_external_secrets_policy        = true
+  external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
+  external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
+  external_secrets_kms_key_arns         = var.external_secrets_kms_key_arns
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = data.terraform_remote_state.eks.outputs.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:external-secrets"]
+    }
+  }
+}
+
+resource "helm_release" "external_secrets" {
+  name       = "external-secrets"
+  repository = "https://charts.external-secrets.io"
+  chart      = "external-secrets"
+  version    = var.helm_package_version
+  namespace  = "kube-system"
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.irsa_role.iam_role_arn
+  }
+}

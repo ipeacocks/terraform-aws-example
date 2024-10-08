@@ -18,7 +18,7 @@ locals {
   route53_zone_arns = [for k, v in data.aws_route53_zone.this : v.arn]
 }
 
-module "aws_lb_controller_pod_identity" {
+module "external_dns_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "v1.4.1"
 

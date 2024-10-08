@@ -1,0 +1,44 @@
+data "terraform_remote_state" "eks" {
+  backend = "s3"
+
+  config = {
+    bucket = "my-tf-state-2023-06-01"
+    key    = "my-eks.tfstate"
+    region = "us-east-1"
+  }
+}
+
+module "irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.44.0"
+
+  role_name             = "eks-ebs-csi-${data.terraform_remote_state.eks.outputs.cluster_name}-${var.region}"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = data.terraform_remote_state.eks.outputs.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+}
+
+resource "aws_eks_addon" "this" {
+  cluster_name             = data.terraform_remote_state.eks.outputs.cluster_name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = var.addon_version
+  service_account_role_arn = module.irsa_role.iam_role_arn
+}
+
+data "kubectl_path_documents" "storage_class" {
+  pattern = "templates/sc.tpl.yaml"
+  vars = {
+    # Produces string like "env_name=development,region=us-east-1,team=devops"
+    tag_specifications = join(",", [for key, value in var.volume_tags : "${key}=${value}"])
+  }
+}
+
+resource "kubectl_manifest" "storage_class" {
+  count     = length(data.kubectl_path_documents.storage_class.documents)
+  yaml_body = element(data.kubectl_path_documents.storage_class.documents, count.index)
+}
