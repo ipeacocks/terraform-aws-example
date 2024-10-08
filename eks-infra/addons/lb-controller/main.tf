@@ -10,7 +10,7 @@ data "terraform_remote_state" "eks" {
 
 module "aws_lb_controller_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "v1.4.1"
+  version = "v1.5.0"
 
   name = "aws-lbc"
 

@@ -20,7 +20,7 @@ locals {
 
 module "external_dns_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "v1.4.1"
+  version = "v1.5.0"
 
   name = "external-dns"
 

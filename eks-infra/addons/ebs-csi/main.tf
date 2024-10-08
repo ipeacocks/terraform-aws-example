@@ -10,7 +10,7 @@ data "terraform_remote_state" "eks" {
 
 module "aws_ebs_csi_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "v1.4.1"
+  version = "v1.5.0"
 
   name = "aws-ebs-csi"
 
@@ -33,7 +33,6 @@ resource "aws_eks_addon" "this" {
   cluster_name             = data.terraform_remote_state.eks.outputs.cluster_name
   addon_name               = "aws-ebs-csi-driver"
   addon_version            = var.addon_version
-  # service_account_role_arn = module.irsa_role.iam_role_arn
 }
 
 data "kubectl_path_documents" "storage_class" {
