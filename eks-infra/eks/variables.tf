@@ -11,8 +11,8 @@ variable "credentials" {
   description = "Where your access and secret_key are stored, you create the file when you run the aws config"
 }
 
-variable "eks_name_prefix" {
-  description = "EKS cluster name prefix"
+variable "eks_name" {
+  description = "EKS cluster name"
   type        = string
   default     = "my-eks"
 }
@@ -20,7 +20,7 @@ variable "eks_name_prefix" {
 variable "cluster_version" {
   description = "EKS version"
   type        = string
-  default     = "1.30"
+  default     = "1.32"
 }
 
 # can be false if you connect to private network via VPN or something
@@ -32,7 +32,7 @@ variable "cluster_endpoint_public_access" {
 
 variable "eks_managed_node_group_defaults" {
   description = "Map of EKS managed node group default configurations"
-  default     = { ami_type = "AL2_x86_64" }
+  default     = { ami_type = "AL2023_ARM_64_STANDARD" }
 }
 
 variable "eks_managed_node_groups" {
@@ -41,7 +41,7 @@ variable "eks_managed_node_groups" {
     one = {
       name = "node-group-1"
 
-      instance_types = ["t3.small"]
+      instance_types = ["t4g.small"]
 
       min_size     = 2
       max_size     = 3

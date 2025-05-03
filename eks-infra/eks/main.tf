@@ -8,16 +8,11 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.24.0"
+  version = "20.36.0"
 
-  cluster_name    = "${var.eks_name_prefix}-${random_string.suffix.result}"
+  cluster_name    = var.eks_name
   cluster_version = var.cluster_version
   cluster_addons  = var.cluster_addons
 
