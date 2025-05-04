@@ -12,7 +12,7 @@ variable "credentials" {
 variable "helm_package_version" {
   description = "Helm package version."
   type        = string
-  default     = "1.3.3"
+  default     = "1.4.0"
 }
 
 variable "namespace" {
