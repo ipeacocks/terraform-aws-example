@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/description: "General purpose EC2NodeClass for running AL 2023 nodes"
 spec:
   amiSelectorTerms:
-    - alias: al2023@v20250403
+    - alias: al2023@v20250501
   metadataOptions:
     httpEndpoint: enabled
     httpPutResponseHopLimit: 2
