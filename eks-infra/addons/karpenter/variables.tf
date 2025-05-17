@@ -46,8 +46,8 @@ variable "generic_node_pool" {
     }), {})
     expire_after = optional(string, "720h")
     instance = optional(object({
-      min_cpu       = optional(number, 4)
-      min_memory_mb = optional(number, 8192)
+      min_cpu       = optional(number, 2)
+      min_memory_mb = optional(number, 1024)
     }), {})
   })
   default = {}

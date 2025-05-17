@@ -37,7 +37,7 @@ spec:
           values: ["on-demand"]
         - key: karpenter.k8s.aws/instance-category
           operator: In
-          values: ["c", "m", "r"]
+          values: ["t", "c", "m"]
         - key: karpenter.k8s.aws/instance-generation
           operator: Gt
           values: ["3"]
