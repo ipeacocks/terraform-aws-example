@@ -66,7 +66,7 @@ EOF
 ### Karpenter budgets.
 Enables `Drifted` and `Underutilized` disruptions from 9-11 and 15-17 UTC on weekdays only. Always enables `Empty` disruptions.
 ```yaml
-# weekends (final and working)
+# weekends (working and easy to understand)
   disruption:
     budgets:
     - nodes: "1"
