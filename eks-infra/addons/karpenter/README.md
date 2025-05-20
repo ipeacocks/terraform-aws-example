@@ -135,7 +135,7 @@ disruption:
     - Underutilized
 ``` 
 ```yaml
-# not working
+# not working (tested)
 disruption:
   budgets:
   - nodes: "0"
