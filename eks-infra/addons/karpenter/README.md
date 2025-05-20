@@ -161,3 +161,32 @@ disruption:
     - Drifted
     - Underutilized
 ```
+```
+# maybe working (not tested)
+disruption:
+  budgets:
+  - nodes: "0"
+    reasons:
+    - Drifted
+    - Underutilized
+
+  - nodes: "1"
+    duration: 24h
+    schedule: 0 0 * * *
+    reasons:
+    - Empty
+
+  - nodes: "1"
+    schedule: 0 9 * * mon-fri
+    duration: 2h
+    reasons:
+    - Drifted
+    - Underutilized
+
+  - nodes: "1"
+    schedule: 0 15 * * mon-fri
+    duration: 2h
+    reasons:
+    - Drifted
+    - Underutilized
+```
