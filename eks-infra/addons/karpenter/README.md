@@ -161,7 +161,7 @@ disruption:
     - Drifted
     - Underutilized
 ```
-```
+```yaml
 # maybe working (not tested)
 disruption:
   budgets:
