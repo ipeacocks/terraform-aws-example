@@ -10,11 +10,15 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 3.0.2"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.38.0"
+    }
   }
 
   backend "s3" {
     bucket = "my-tf-state-2023-06-01"
-    key    = "my-lb-controller.tfstate"
+    key    = "my-argo-rollouts.tfstate"
     region = "us-east-1"
   }
 }

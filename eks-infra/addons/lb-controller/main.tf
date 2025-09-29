@@ -10,7 +10,7 @@ data "terraform_remote_state" "eks" {
 
 module "aws_lb_controller_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "v1.5.0"
+  version = "2.0.0"
 
   name = "aws-lbc"
 
@@ -36,18 +36,18 @@ resource "helm_release" "this" {
   version    = var.helm_package_version
   namespace  = "kube-system"
 
-  set {
-    name  = "clusterName"
-    value = data.terraform_remote_state.eks.outputs.cluster_name
-  }
-
-  set {
-    name  = "serviceAccount.create"
-    value = "true"
-  }
-
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
+  set = [
+    {
+      name  = "clusterName"
+      value = data.terraform_remote_state.eks.outputs.cluster_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = "true"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = "aws-load-balancer-controller"
+    }
+  ]
 }

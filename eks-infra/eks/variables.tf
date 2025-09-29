@@ -17,10 +17,10 @@ variable "eks_name" {
   default     = "my-eks"
 }
 
-variable "cluster_version" {
+variable "eks_version" {
   description = "EKS version"
   type        = string
-  default     = "1.32"
+  default     = "1.33"
 }
 
 # can be false if you connect to private network via VPN or something
@@ -30,22 +30,25 @@ variable "cluster_endpoint_public_access" {
   default     = true
 }
 
-variable "eks_managed_node_group_defaults" {
-  description = "Map of EKS managed node group default configurations"
-  default     = { ami_type = "AL2023_ARM_64_STANDARD" }
-}
-
 variable "eks_managed_node_groups" {
   description = "Map of EKS managed node group definitions to create"
   default = {
     one = {
       name = "node-group-1"
-
-      instance_types = ["t4g.small"]
+      
+      # Because Argo Rollouts test images don't support ARM64
+      ami_type       = "AL2023_x86_64_STANDARD" # AL2023_ARM_64_STANDARD
+      instance_types = ["t3a.medium"]           # t4g.medium
 
       min_size     = 2
       max_size     = 3
       desired_size = 2
+
+      metadata_options = {
+        http_endpoint               = "enabled"
+        http_put_response_hop_limit = 2
+        http_tokens                 = "required"
+      }
     }
   }
 }
@@ -73,7 +76,7 @@ variable "node_security_group_additional_rules" {
 }
 
 # maybe better to pin versions here
-variable "cluster_addons" {
+variable "eks_addons" {
   description = "Map of cluster addon configurations to enable for the cluster"
   default = {
     coredns = {
@@ -83,7 +86,8 @@ variable "cluster_addons" {
       most_recent = true
     }
     vpc-cni = {
-      most_recent = true
+      most_recent    = true
+      before_compute = true
     }
     eks-pod-identity-agent = {
       most_recent = true

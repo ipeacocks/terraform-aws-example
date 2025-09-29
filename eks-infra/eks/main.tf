@@ -10,18 +10,17 @@ data "terraform_remote_state" "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.36.0"
+  version = "21.1.5"
 
-  cluster_name    = var.eks_name
-  cluster_version = var.cluster_version
-  cluster_addons  = var.cluster_addons
+  name               = var.eks_name
+  kubernetes_version = var.eks_version
+  addons             = var.eks_addons
 
   vpc_id                         = data.terraform_remote_state.vpc.outputs.vpc_id
   control_plane_subnet_ids       = data.terraform_remote_state.vpc.outputs.control_plane_subnet_ids
   subnet_ids                     = data.terraform_remote_state.vpc.outputs.worker_subnet_ids
-  cluster_endpoint_public_access = var.cluster_endpoint_public_access
+  endpoint_public_access         = var.cluster_endpoint_public_access
 
-  eks_managed_node_group_defaults      = var.eks_managed_node_group_defaults
   eks_managed_node_groups              = var.eks_managed_node_groups
   node_security_group_additional_rules = var.node_security_group_additional_rules
 
