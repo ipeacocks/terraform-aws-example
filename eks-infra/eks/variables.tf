@@ -20,7 +20,7 @@ variable "eks_name" {
 variable "eks_version" {
   description = "EKS version"
   type        = string
-  default     = "1.33"
+  default     = "1.36"
 }
 
 # can be false if you connect to private network via VPN or something
@@ -35,10 +35,10 @@ variable "eks_managed_node_groups" {
   default = {
     one = {
       name = "node-group-1"
-      
+
       # Because Argo Rollouts test images don't support ARM64
-      ami_type       = "AL2023_x86_64_STANDARD" # AL2023_ARM_64_STANDARD
-      instance_types = ["t3a.medium"]           # t4g.medium
+      ami_type       = "AL2023_ARM_64_STANDARD" # AL2023_ARM_64_STANDARD
+      instance_types = ["t4g.medium"]           # t4g.medium
 
       min_size     = 2
       max_size     = 3

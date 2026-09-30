@@ -10,7 +10,7 @@ data "terraform_remote_state" "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "21.1.5"
+  version = "21.25.0"
 
   name               = var.eks_name
   kubernetes_version = var.eks_version
