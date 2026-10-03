@@ -42,3 +42,59 @@ resource "kubectl_manifest" "this" {
   yaml_body  = element(data.kubectl_path_documents.this.documents, count.index)
   depends_on = [helm_release.this]
 }
+
+module "s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "5.16.1"
+
+  bucket = "fluentbit-logs-2026"
+
+  versioning = {
+    enabled = false
+  }
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+data "aws_iam_policy_document" "this" {
+
+  statement {
+    sid    = "S3Write"
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject"
+    ]
+
+    resources = [
+      "${module.s3_bucket.s3_bucket_arn}/*"
+    ]
+  }
+}
+
+module "custom_pod_identity" {
+
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "2.9.0"
+
+  name            = "eks-fluentbit-${data.terraform_remote_state.eks.outputs.cluster_name}-${var.region}"
+  use_name_prefix = false
+
+  attach_custom_policy = true
+  source_policy_documents = [
+    data.aws_iam_policy_document.this.json
+  ]
+
+  associations = {
+    one = {
+      cluster_name    = data.terraform_remote_state.eks.outputs.cluster_name
+      namespace       = var.namespace
+      service_account = "fluent-bit"
+    }
+  }
+}

@@ -32,3 +32,8 @@ spec:
       removePrefix: kubernetes_
       wildcard:
       - kubernetes_*
+  - rewriteTag:
+      rules:
+      - $kubernetes['labels']['app.kubernetes.io/name'] ^fluent-bit$ fluentbit.$TAG true
+      emitterName: fluentbit
+      emitterMemBufLimit: 64Ms
