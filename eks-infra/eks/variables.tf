@@ -20,7 +20,7 @@ variable "eks_name" {
 variable "eks_version" {
   description = "EKS version"
   type        = string
-  default     = "1.36"
+  default     = "1.37"
 }
 
 # can be false if you connect to private network via VPN or something

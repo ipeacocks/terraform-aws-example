@@ -26,26 +26,20 @@ locals {
 
 module "this" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.35.0"
+  version = "21.30.2"
 
   cluster_name               = data.terraform_remote_state.eks.outputs.cluster_name
   iam_policy_name            = local.name
   iam_policy_use_name_prefix = false
-  enable_v1_permissions      = true
   iam_role_name              = local.name
   iam_role_use_name_prefix   = false
   queue_name                 = local.name
   create_node_iam_role       = false
   node_iam_role_arn          = format("arn:aws:iam::%s:role/%s", data.aws_caller_identity.current.account_id, data.terraform_remote_state.eks.outputs.eks_managed_node_groups["one"].iam_role_name)
   # Since the nodegroup role will already have an access entry
-  create_access_entry = false
-}
-
-resource "aws_eks_pod_identity_association" "this" {
-  cluster_name    = data.terraform_remote_state.eks.outputs.cluster_name
-  namespace       = var.namespace
-  service_account = "karpenter"
-  role_arn        = module.this.iam_role_arn
+  create_access_entry             = false
+  create_pod_identity_association = true
+  namespace                       = var.namespace
 }
 
 resource "helm_release" "crd" {
