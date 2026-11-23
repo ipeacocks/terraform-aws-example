@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+spec:
+  nodeSelector:
+    node-type: dynamic
+  tolerations:
+  - effect: NoSchedule
+    key: your.company.io/workloads
+    operator: Exists
+  - effect: NoExecute
+    key: your.company.io/workloads
+    operator: Exists

@@ -1,0 +1,45 @@
+terraform {
+  required_version = ">= 1.17.2"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.73.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.38"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 3.0"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.7"
+    }
+  }
+
+  backend "s3" {
+    bucket = "my-tf-state-2023-06-01"
+    key    = "my-emr.tfstate"
+    region = "us-east-1"
+  }
+}
+
+provider "aws" {
+  region                   = var.region
+  shared_credentials_files = var.credentials
+}
+
+provider "kubernetes" {
+  host                   = data.terraform_remote_state.eks.outputs.cluster_endpoint
+  cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", data.terraform_remote_state.eks.outputs.cluster_name]
+  }
+}

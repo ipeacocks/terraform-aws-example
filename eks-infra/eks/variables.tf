@@ -38,7 +38,7 @@ variable "eks_managed_node_groups" {
 
       # Because Argo Rollouts test images don't support ARM64
       ami_type       = "AL2023_ARM_64_STANDARD" # AL2023_ARM_64_STANDARD
-      instance_types = ["t4g.medium"]           # t4g.medium
+      instance_types = ["t4g.xlarge"]           # t4g.medium
 
       min_size     = 2
       max_size     = 3
